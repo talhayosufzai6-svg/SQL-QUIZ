@@ -15,8 +15,7 @@ brand name
 quantity, list_price, discount
 calculated net_line_revenue)?
 
-solve
-
+-- ANSWER:
 SELECT 
     o.order_id,
     o.order_date,
@@ -50,6 +49,7 @@ total units sold
 total net revenue
 average order value?
 ------------------------------------------------------------------
+-- ANSWER:
 SELECT 
     s.store_name,
     COUNT(DISTINCT o.order_id) AS distinct_orders,
@@ -67,6 +67,7 @@ ORDER BY total_net_revenue DESC;
 -- TASK 3: High-Value Customers
 Management wants to identify high-value customers. Return customers whose total completed-order spending is greater than the average total spending of customers who have completed orders.?
 -------------------------------------------------
+-- ANSWER:
 WITH customer_spending AS (
     SELECT 
         c.customer_id,
@@ -89,6 +90,7 @@ ORDER BY total_spending DESC;
 Operations wants to identify inventory risk. Return products where the stock quantity is below 5 in at least one store.
 Show product name, store name, current quantity, category name, and brand name. Products with zero stock should appear first, followed by the lowest remaining quantities.
 -------------------------------------------------
+-- ANSWER:
 SELECT 
     p.product_name,
     s.store_name,
@@ -109,7 +111,7 @@ For each product category, identify the top 3 products by total net revenue from
 
 Return category name, product name, total units sold, total net revenue, and the product's position within its category. Tied products must receive the same position and the next position should not contain gaps?
 -----------------------------------------------------------------------------------
-
+-- ANSWER:
 WITH product_revenue AS (
     SELECT 
         c.category_name,
@@ -152,6 +154,7 @@ A customer with customer_id = 1 has requested that their phone number be changed
 Write SQL that performs this update inside an explicit transaction. Include a validation query after the UPDATE and show how the change can be rolled back during testing so the assessment database is not permanently changed.
 
 -------------------------------------------------------
+-- ANSWER:
 BEGIN TRANSACTION;
 
 UPDATE sales.customers
@@ -181,6 +184,7 @@ Below the query, add a SQL comment of no more than three lines explaining:
 3. why management should care about it.
 
 --------------------------------------------------
+-- ANSWER:
 SELECT 
     b.brand_name,
     c.category_name,
