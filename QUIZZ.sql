@@ -1,4 +1,4 @@
- ----USE BIKESTORES
+USE BikeStores;
 
  ---sales.customers (customer_id, first_name, last_name, phone, email, street, city, state, zip_code)
 select
@@ -34,17 +34,13 @@ ON o.staff_id = st.staff_id;
 
 
 SELECT 
-    order_id,
-   order_items,
-   product_id,
-    quantity,
-    list_price,
-    discount
-FROM sales.orders o
-inner JOIN sales.order_items oi 
-ON o.order_id = oi.order_id
-inner JOIN sales.customers c 
-ON o.customer_id = c.customer_id;
+    oi.order_id,
+    oi.item_id,
+    oi.product_id,
+    oi.quantity,
+    oi.list_price,
+    oi.discount
+FROM sales.order_items AS oi;
 
           
     
@@ -62,15 +58,15 @@ SELECT
 FROM sales.orders o
 JOIN sales.order_items oi ON o.order_id = oi.order_id
 JOIN sales.customers c ON o.customer_id = c.customer_id
-JOIN sales.products p ON oi.product_id = p.product_id;
+JOIN production.products p ON oi.product_id = p.product_id;
 
 -- 6. SAB SE ZYADA BIKNE WALA PRODUCT
 SELECT TOP 5
     p.product_name,
     SUM(oi.quantity) AS total_sold
 FROM sales.order_items oi
-JOIN sales.products p ON oi.product_id = p.product_id
-GROUP BY p.product_name
+JOIN production.products p ON oi.product_id = p.product_id
+GROUP BY p.product_id, p.product_name
 ORDER BY total_sold DESC;
 
 
@@ -133,27 +129,24 @@ ORDER BY city ASC, last_name ASC;
 
 --Q2. (Aliases, calculated column, ORDER BY, pagination) Show product_name, list_price and a calculated column called discounted_price (
 --10% off) for products with a list_price above 500. Skip the 10 most expensive products 
---and return the next 10 (the 11th to 20th most expensive). ANSWER MAI ERROR A RHA HAI
+--and return the next 10 (the 11th to 20th most expensive).
 
-    SELECT product_name, list_price, list_price * 0.90 AS discounted_price
-FROM sales.product as p
+SELECT product_name, list_price, list_price * 0.90 AS discounted_price
+FROM production.products AS p
 WHERE list_price > 500
-ORDER BY list_price DESC
+ORDER BY list_price DESC, product_id ASC
 OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;
 
 
-Q3.-- (NULL, BETWEEN, AND/OR precedence) Find all orders that are either Pending or Processing, have not shipped yet, 
-and were placed between 2018-01-01 and 2018-06-30.
-Return order_id, order_date, required_date and order_status. Your AND/OR logic must be explicitly group:
+-- Q3. (NULL, BETWEEN, AND/OR precedence) Find all orders that are either Pending or Processing, have not shipped yet,
+-- and were placed between 2018-01-01 and 2018-06-30.
+-- Return order_id, order_date, required_date and order_status. Group the AND/OR logic explicitly.
 
 
 SELECT order_id, order_date, required_date, order_status
 FROM sales.orders
-WHERE order_status IN (1, 2)
-  AND shipped_date IS NULL
-  AND order_date BETWEEN '2018-01-01' AND '2018-06-30'
-     WHERE order_status = 1 OR order_status = 2;
-  AND shipped_date IS NULL
-  AND order_date BETWEEN;
+WHERE (order_status = 1 OR order_status = 2)
+    AND shipped_date IS NULL
+    AND order_date BETWEEN '2018-01-01' AND '2018-06-30';
 
 
